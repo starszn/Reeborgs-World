@@ -1,0 +1,93 @@
+# ---------- Helper Functions ----------
+
+def turn_right():
+    turn_left()
+    turn_left()
+    turn_left()
+
+def collect_carrots():
+    while object_here("carrot"):
+        take()
+
+def face_north():
+    while not is_facing_north():
+        turn_left()
+
+def face_south():
+    face_north()
+    turn_left()
+    turn_left()
+
+def face_east():
+    face_north()
+    turn_right()
+
+def face_west():
+    face_north()
+    turn_left()
+
+# ---------- Sweep a single row both directions ----------
+
+def sweep_row_both_directions():
+    # Collect on current square
+    collect_carrots()
+    
+    # Sweep left to wall
+    face_west()
+    while front_is_clear():
+        move()
+        collect_carrots()
+    
+    # Sweep right to wall
+    face_east()
+    while front_is_clear():
+        move()
+        collect_carrots()
+
+# ---------- Full Bottom-to-Top Lawn-Mower Sweep ----------
+
+def sweep_full_grid():
+    # Move to bottom row first
+    face_south()
+    while front_is_clear():
+        move()
+    
+    # Sweep row by row from bottom to top
+    while True:
+        # Sweep current row both directions
+        sweep_row_both_directions()
+        
+        # Move up to next row if possible
+        face_north()
+        if front_is_clear():
+            move()
+        else:
+            break  # finished all rows
+
+# ---------- Go to Top-Right Carrot Bin ----------
+
+def go_to_top_right():
+    face_north()
+    while front_is_clear():
+        move()
+    face_east()
+    while front_is_clear():
+        move()
+    while carries_object():
+        put()
+
+# ---------- Go to Bottom-Left Finish Line ----------
+
+def go_to_bottom_left():
+    face_west()
+    while front_is_clear():
+        move()
+    face_south()
+    while front_is_clear():
+        move()
+
+# ---------- Main Program ----------
+
+sweep_full_grid()      # Sweep every row, covering all squares both directions
+go_to_top_right()      # Drop all carrots at top-right bin
+go_to_bottom_left()    # Go to bottom-left finish line
